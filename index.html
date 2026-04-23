@@ -163,7 +163,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://withered-bar-5d76.anuj-sharma.workers.dev';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJybYoIG2WLw-Fpa4UDK8L1tlTmicRljkPStccnrZj-D1mjulPFbPFZBnHnqFLDq5PlQ/exec';
 
 const HYD_TEAMS = ['telugu','tamil','kannada','malayalam','hyderabad','hyd'];
 const MALAD_TEAMS = ['malad'];
@@ -222,7 +222,6 @@ function parseDate(val) {
   if (!isNaN(fd)) return { y: fd.getFullYear(), m: fd.getMonth(), d: fd.getDate() };
   return null;
 }
-
 function dateKey(obj) {
   if (!obj) return '';
   return `${obj.y}-${String(obj.m+1).padStart(2,'0')}-${String(obj.d).padStart(2,'0')}`;
