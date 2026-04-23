@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -97,6 +97,18 @@
   .error-msg { background: #2a1020; border: 1px solid #f74f7a; color: #f74f7a; padding: 12px 18px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; display: none; }
   #viewerSection { display: none; }
   #adminSection { display: none; }
+  .pw-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+  .pw-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; width: 300px; text-align: center; }
+  .pw-box h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .pw-box p { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; }
+  .pw-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; font-family: 'Space Mono', monospace; margin-bottom: 10px; outline: none; letter-spacing: 0.08em; box-sizing: border-box; }
+  .pw-input:focus { border-color: var(--accent); }
+  .pw-input.wrong { border-color: var(--accent4); }
+  .pw-error { font-size: 12px; color: var(--accent4); margin-bottom: 10px; display: none; }
+  .pw-btn { width: 100%; padding: 10px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .pw-btn:hover { background: #3a7aee; }
+  .pw-cancel { margin-top: 10px; font-size: 12px; color: var(--text-dim); cursor: pointer; display: block; }
+  .pw-cancel:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -106,10 +118,23 @@
   <div class="logo" style="color:var(--text-dim);">Lead Analytics Dashboard</div>
 </header>
 
+<!-- Password Modal -->
+<div class="pw-overlay" id="pwModal" style="display:none;">
+  <div class="pw-box">
+    <div style="font-size:32px;margin-bottom:10px;">🔒</div>
+    <h2>Admin Access</h2>
+    <p>Enter password to access the upload panel</p>
+    <input class="pw-input" type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"/>
+    <div class="pw-error" id="pwError">❌ Wrong password. Try again.</div>
+    <button class="pw-btn" onclick="checkPw()">Unlock</button>
+    <span class="pw-cancel" onclick="closePwModal()">Cancel</span>
+  </div>
+</div>
+
 <div class="main">
   <div class="mode-tabs">
     <div class="tab" id="tabView" onclick="switchMode('view')">📊 View Dashboard</div>
-    <div class="tab" id="tabAdmin" onclick="switchMode('admin')">⬆ Admin Upload</div>
+    <div class="tab" id="tabAdmin" onclick="askAdminPw()">🔒 Admin Upload</div>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
@@ -163,7 +188,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJybYoIG2WLw-Fpa4UDK8L1tlTmicRljkPStccnrZj-D1mjulPFbPFZBnHnqFLDq5PlQ/exec';
+const SCRIPT_URL = 'https://withered-bar-5d76.anuj-sharma.workers.dev';
 
 const HYD_TEAMS = ['telugu','tamil','kannada','malayalam','hyderabad','hyd'];
 const MALAD_TEAMS = ['malad'];
@@ -177,6 +202,35 @@ const EXCLUDE_SOURCE_DETAIL = [
 
 let report1Data = {}, report2Data = {};
 let pendingData = null;
+
+const ADMIN_PW = 'Vishal@1234mumbai';
+let adminUnlocked = false;
+
+function askAdminPw() {
+  if (adminUnlocked) { switchMode('admin'); return; }
+  document.getElementById('pwModal').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  document.getElementById('pwInput').classList.remove('wrong');
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PW) {
+    adminUnlocked = true;
+    document.getElementById('pwModal').style.display = 'none';
+    switchMode('admin');
+  } else {
+    document.getElementById('pwInput').classList.add('wrong');
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function closePwModal() {
+  document.getElementById('pwModal').style.display = 'none';
+}
 
 function switchMode(mode) {
   document.getElementById('tabView').classList.toggle('active', mode === 'view');
@@ -310,212 +364,4 @@ function renderAll(data) {
     const d = report1Data[k];
     const tot = d.Hyderabad+d.Malad+d.Thane;
     sH+=d.Hyderabad; sM+=d.Malad; sT+=d.Thane;
-    r1Body.innerHTML += `<tr><td>${fmtDate(d.dateObj)}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
-  }
-  r1Foot.innerHTML = `<tr><td>Total</td><td class="col-hyd">${sH}</td><td class="col-malad">${sM}</td><td class="col-thane">${sT}</td><td class="col-total">${sH+sM+sT}</td></tr>`;
-  document.getElementById('r1Badge').textContent = sorted.length + ' days';
-
-  // Report 2
-  const r2Body = document.getElementById('report2Body');
-  const r2Foot = document.getElementById('report2Foot');
-  r2Body.innerHTML=''; r2Foot.innerHTML='';
-  const stages = Object.keys(report2Data).sort();
-  let gH=0,gM=0,gT=0;
-  for (const stage of stages) {
-    r2Body.innerHTML += `<tr class="stage-header"><td colspan="5">${stage}</td></tr>`;
-    const attempts = report2Data[stage];
-    const aKeys = ATTEMPT_ORDER.filter(a => attempts[a]);
-    let stH=0,stM=0,stTh=0;
-    for (const a of aKeys) {
-      const d = attempts[a];
-      const tot = d.Hyderabad+d.Malad+d.Thane;
-      stH+=d.Hyderabad; stM+=d.Malad; stTh+=d.Thane;
-      gH+=d.Hyderabad; gM+=d.Malad; gT+=d.Thane;
-      r2Body.innerHTML += `<tr><td style="padding-left:28px;">↳ Attempt ${a}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
-    }
-    r2Body.innerHTML += `<tr class="stage-subtotal"><td style="padding-left:14px;font-weight:700;">${stage} Total</td><td class="col-hyd" style="font-weight:700;">${stH}</td><td class="col-malad" style="font-weight:700;">${stM}</td><td class="col-thane" style="font-weight:700;">${stTh}</td><td class="col-total" style="font-weight:700;">${stH+stM+stTh}</td></tr>`;
-  }
-  r2Foot.innerHTML = `<tr><td>Grand Total</td><td class="col-hyd">${gH}</td><td class="col-malad">${gM}</td><td class="col-thane">${gT}</td><td class="col-total">${gH+gM+gT}</td></tr>`;
-  document.getElementById('r2Badge').textContent = stages.length + ' stages';
-
-  document.getElementById('statsRow').style.display = 'grid';
-  document.getElementById('dlBar').style.display = 'flex';
-  document.getElementById('tablesGrid').style.display = 'grid';
-}
-
-// ---- LOAD from Google Sheets ----
-async function loadFromSheets() {
-  const bar = document.getElementById('syncBar');
-  bar.className = 'sync-bar loading';
-  bar.innerHTML = '<span class="spinner"></span> Loading latest data...';
-  bar.style.display = 'flex';
-  document.getElementById('statsRow').style.display = 'none';
-  document.getElementById('dlBar').style.display = 'none';
-  document.getElementById('tablesGrid').style.display = 'none';
-
-  try {
-    const res = await fetch(SCRIPT_URL, { method: 'GET' });
-    const json = await res.json();
-    if (json.status === 'empty' || !json.rows || json.rows.length < 3) {
-      bar.className = 'sync-bar error';
-      bar.innerHTML = '⚠ No data uploaded yet. Switch to Admin Upload tab to upload data.';
-      return;
-    }
-
-    const timestamp = json.rows[1][0] || '';
-    const dataRows = json.rows.slice(2);
-    const data = dataRows
-      .filter(r => r[1] && r[1] !== 'Other')
-      .map(r => ({
-        date: parseDateKey(r[0]),
-        unit: r[1],
-        stage: r[2],
-        attempts: parseInt(r[3]) || 0,
-      }));
-
-    buildReports(data);
-    renderAll(data);
-
-    bar.className = 'sync-bar synced';
-    bar.innerHTML = '✓ Data loaded successfully';
-    if (timestamp) {
-      const lu = document.getElementById('lastUpdated');
-      lu.style.display = 'block';
-      lu.textContent = '🕐 Last updated by Vishal: ' + timestamp;
-    }
-  } catch(err) {
-    bar.className = 'sync-bar error';
-    bar.innerHTML = '✗ Could not load data. Check your internet connection.';
-  }
-}
-
-// ---- ADMIN File Upload ----
-const fileInput = document.getElementById('fileInput');
-const uploadZone = document.getElementById('uploadZone');
-
-uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
-uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
-uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
-fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
-
-function handleFile(file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: false });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const raw = XLSX.utils.sheet_to_json(ws, { defval: '' });
-      if (!raw.length) { showError('No data found.'); return; }
-      const data = processRawData(raw);
-      if (!data) { showError('Could not find required columns (Registration Date, User Team, Lead Stage).'); return; }
-      pendingData = data;
-      document.getElementById('fileName').textContent = file.name + ' — ' + data.length + ' rows ready';
-      document.getElementById('fileBadge').style.display = 'inline-flex';
-      uploadZone.classList.add('has-file');
-      document.getElementById('adminDlBar').style.display = 'flex';
-      document.getElementById('uploadSyncBar').style.display = 'none';
-    } catch(err) { showError('Could not read file: ' + err.message); }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-// ---- SAVE to Google Sheets ----
-document.getElementById('saveToSheets').addEventListener('click', async () => {
-  if (!pendingData) return;
-  const bar = document.getElementById('uploadSyncBar');
-  bar.style.display = 'flex';
-  bar.className = 'sync-bar syncing';
-  bar.innerHTML = '<span class="spinner"></span> Clearing old data...';
-  document.getElementById('saveToSheets').disabled = true;
-
-  try {
-    const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-
-    // Step 1: Clear
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'clear' }) });
-
-    // Step 2: Write header row + timestamp row
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'write',
-        headers: ['date_key','unit','stage','attempts'],
-        rows: [[timestamp,'','','']]
-      })
-    });
-
-    // Step 3: Write data in chunks of 500
-    const dataRows = pendingData.map(r => [r.date ? dateKey(r.date) : '', r.unit, r.stage, r.attempts]);
-    const CHUNK = 500;
-    for (let i = 0; i < dataRows.length; i += CHUNK) {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'write', rows: dataRows.slice(i, i+CHUNK) })
-      });
-      bar.innerHTML = `<span class="spinner"></span> Uploading... ${Math.min(i+CHUNK, dataRows.length).toLocaleString()} / ${dataRows.length.toLocaleString()} rows`;
-    }
-
-    bar.className = 'sync-bar synced';
-    bar.innerHTML = `✓ ${dataRows.length.toLocaleString()} rows uploaded! Dashboard is now live for everyone.`;
-    document.getElementById('saveToSheets').disabled = false;
-  } catch(err) {
-    bar.className = 'sync-bar error';
-    bar.innerHTML = '✗ Upload failed: ' + err.message;
-    document.getElementById('saveToSheets').disabled = false;
-  }
-});
-
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg; el.style.display = 'block';
-}
-
-// ---- Downloads ----
-document.getElementById('dlReport1').addEventListener('click', () => {
-  const wb = XLSX.utils.book_new();
-  const rows = [['Created Date','Hyderabad','Malad','Thane','Total']];
-  const sorted = Object.keys(report1Data).sort();
-  let sH=0,sM=0,sT=0;
-  for (const k of sorted) {
-    const d = report1Data[k];
-    const tot = d.Hyderabad+d.Malad+d.Thane;
-    sH+=d.Hyderabad; sM+=d.Malad; sT+=d.Thane;
-    rows.push([fmtDate(d.dateObj), d.Hyderabad, d.Malad, d.Thane, tot]);
-  }
-  rows.push(['Total', sH, sM, sT, sH+sM+sT]);
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{wch:18},{wch:14},{wch:12},{wch:12},{wch:12}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Date-wise Distribution');
-  XLSX.writeFile(wb, 'Report1_Datewise_Lead_Distribution.xlsx');
-});
-
-document.getElementById('dlReport2').addEventListener('click', () => {
-  const wb = XLSX.utils.book_new();
-  const rows = [['Stage / Attempts','Hyderabad','Malad','Thane','Total']];
-  const stages = Object.keys(report2Data).sort();
-  let gH=0,gM=0,gT=0;
-  for (const stage of stages) {
-    rows.push([stage,'','','','']);
-    const aKeys = ATTEMPT_ORDER.filter(a => report2Data[stage][a]);
-    let stH=0,stM=0,stTh=0;
-    for (const a of aKeys) {
-      const d = report2Data[stage][a];
-      const tot = d.Hyderabad+d.Malad+d.Thane;
-      stH+=d.Hyderabad; stM+=d.Malad; stTh+=d.Thane;
-      gH+=d.Hyderabad; gM+=d.Malad; gT+=d.Thane;
-      rows.push([`  Attempt ${a}`, d.Hyderabad, d.Malad, d.Thane, tot]);
-    }
-    rows.push([`${stage} Total`, stH, stM, stTh, stH+stM+stTh]);
-  }
-  rows.push(['Grand Total', gH, gM, gT, gH+gM+gT]);
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{wch:20},{wch:14},{wch:12},{wch:12},{wch:12}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Stage-wise Distribution');
-  XLSX.writeFile(wb, 'Report2_Stagewise_Lead_Distribution.xlsx');
-});
-
-// Init
-switchMode('view');
-</script>
-</body>
-</html>
+    r1Body.innerHTML += `<tr><td>${fmtDate(d.dateObj)}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-th
