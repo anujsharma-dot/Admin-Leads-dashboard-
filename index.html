@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -25,79 +26,92 @@
   h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
   .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
 
-  .mode-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-  .tab { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); transition: all 0.18s; }
-  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .tab:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+.mode-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+.tab { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(–border); background: var(–surface); color: var(–text-dim); transition: all 0.18s; }
+.tab.active { background: var(–accent); color: #fff; border-color: var(–accent); }
+.tab:hover:not(.active) { border-color: var(–accent); color: var(–text); }
 
-  .upload-zone { border: 2px dashed var(--border); border-radius: 16px; padding: 40px 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); margin-bottom: 20px; position: relative; }
-  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: #161e2e; }
-  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-  .upload-icon { font-size: 36px; margin-bottom: 10px; }
-  .upload-zone h2 { font-size: 17px; font-weight: 600; margin-bottom: 5px; }
-  .upload-zone p { color: var(--text-dim); font-size: 13px; }
-  .upload-zone.has-file { border-color: var(--accent3); background: #0d1e18; }
-  .file-badge { display: inline-flex; align-items: center; gap: 8px; background: #0d2a1e; border: 1px solid var(--accent3); color: var(--accent3); border-radius: 8px; padding: 6px 14px; font-size: 13px; margin-top: 10px; font-family: 'Space Mono', monospace; }
+.upload-zone { border: 2px dashed var(–border); border-radius: 16px; padding: 40px 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(–surface); margin-bottom: 20px; position: relative; }
+.upload-zone:hover, .upload-zone.drag { border-color: var(–accent); background: #161e2e; }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.upload-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-zone h2 { font-size: 17px; font-weight: 600; margin-bottom: 5px; }
+.upload-zone p { color: var(–text-dim); font-size: 13px; }
+.upload-zone.has-file { border-color: var(–accent3); background: #0d1e18; }
+.file-badge { display: inline-flex; align-items: center; gap: 8px; background: #0d2a1e; border: 1px solid var(–accent3); color: var(–accent3); border-radius: 8px; padding: 6px 14px; font-size: 13px; margin-top: 10px; font-family: ‘Space Mono’, monospace; }
 
-  .sync-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; border: 1px solid var(--border); background: var(--surface); }
-  .sync-bar.syncing { border-color: var(--accent2); background: #1e1800; color: var(--accent2); }
-  .sync-bar.synced { border-color: var(--accent3); background: #0d1e18; color: var(--accent3); }
-  .sync-bar.error { border-color: var(--accent4); background: #2a1020; color: var(--accent4); }
-  .sync-bar.loading { border-color: var(--accent); background: #0d1620; color: var(--accent); }
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.sync-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; border: 1px solid var(–border); background: var(–surface); }
+.sync-bar.syncing { border-color: var(–accent2); background: #1e1800; color: var(–accent2); }
+.sync-bar.synced { border-color: var(–accent3); background: #0d1e18; color: var(–accent3); }
+.sync-bar.error { border-color: var(–accent4); background: #2a1020; color: var(–accent4); }
+.sync-bar.loading { border-color: var(–accent); background: #0d1620; color: var(–accent); }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; border-top: 3px solid var(--accent); }
-  .stat-card.hyd { border-top-color: var(--hyd); }
-  .stat-card.malad { border-top-color: var(--malad); }
-  .stat-card.thane { border-top-color: var(--thane); }
-  .stat-card.total { border-top-color: var(--total); }
-  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
-  .stat-value { font-size: 30px; font-weight: 700; font-family: 'Space Mono', monospace; }
-  .stat-card.hyd .stat-value { color: var(--hyd); }
-  .stat-card.malad .stat-value { color: var(--malad); }
-  .stat-card.thane .stat-value { color: var(--thane); }
-  .stat-card.total .stat-value { color: var(--total); }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(–surface); border: 1px solid var(–border); border-radius: 12px; padding: 18px 20px; border-top: 3px solid var(–accent); }
+.stat-card.hyd { border-top-color: var(–hyd); }
+.stat-card.malad { border-top-color: var(–malad); }
+.stat-card.thane { border-top-color: var(–thane); }
+.stat-card.total { border-top-color: var(–total); }
+.stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(–text-dim); margin-bottom: 6px; }
+.stat-value { font-size: 30px; font-weight: 700; font-family: ‘Space Mono’, monospace; }
+.stat-card.hyd .stat-value { color: var(–hyd); }
+.stat-card.malad .stat-value { color: var(–malad); }
+.stat-card.thane .stat-value { color: var(–thane); }
+.stat-card.total .stat-value { color: var(–total); }
 
-  .dl-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; font-family: 'DM Sans', sans-serif; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #3a7aee; }
-  .btn-secondary { background: var(--accent2); color: #1a1200; }
-  .btn-secondary:hover { background: #e09540; }
-  .btn-green { background: var(--accent3); color: #001a10; }
-  .btn-green:hover { background: #3de0a0; }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.dl-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; font-family: ‘DM Sans’, sans-serif; }
+.btn-primary { background: var(–accent); color: #fff; }
+.btn-primary:hover { background: #3a7aee; }
+.btn-secondary { background: var(–accent2); color: #1a1200; }
+.btn-secondary:hover { background: #e09540; }
+.btn-green { background: var(–accent3); color: #001a10; }
+.btn-green:hover { background: #3de0a0; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  @media (max-width: 900px) { .tables-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+.tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 900px) { .tables-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
 
-  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-  .table-card-header { padding: 14px 18px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .table-card-header h3 { font-size: 13px; font-weight: 600; }
-  .badge { font-family: 'Space Mono', monospace; font-size: 11px; background: var(--bg); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; color: var(--text-dim); }
-  .table-scroll { overflow-x: auto; max-height: 480px; overflow-y: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { background: var(--header-h); padding: 10px 14px; text-align: center; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; position: sticky; top: 0; z-index: 2; color: var(--text-dim); }
-  thead th:first-child { text-align: left; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody td { padding: 9px 14px; text-align: center; }
-  tbody td:first-child { text-align: left; font-weight: 500; }
-  tfoot td { padding: 10px 14px; text-align: center; font-weight: 700; background: var(--surface2); font-family: 'Space Mono', monospace; font-size: 12px; border-top: 2px solid var(--border); }
-  tfoot td:first-child { text-align: left; }
-  .stage-header td { background: #1a2035 !important; color: var(--accent) !important; font-weight: 700 !important; font-size: 12px !important; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 14px !important; }
-  .stage-subtotal td { background: #181e2e !important; border-top: 1px solid var(--border); border-bottom: 2px solid var(--border); font-size: 12px !important; }
-  .col-hyd { color: var(--hyd); font-weight: 600; }
-  .col-malad { color: var(--malad); font-weight: 600; }
-  .col-thane { color: var(--thane); font-weight: 600; }
-  .col-total { color: var(--total); font-weight: 700; }
-  .last-updated { font-size: 11px; color: var(--text-dim); font-family: 'Space Mono', monospace; margin-bottom: 16px; }
-  .error-msg { background: #2a1020; border: 1px solid #f74f7a; color: #f74f7a; padding: 12px 18px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; display: none; }
-  #viewerSection { display: none; }
-  #adminSection { display: none; }
+.table-card { background: var(–surface); border: 1px solid var(–border); border-radius: 14px; overflow: hidden; }
+.table-card-header { padding: 14px 18px; background: var(–surface2); border-bottom: 1px solid var(–border); display: flex; align-items: center; justify-content: space-between; }
+.table-card-header h3 { font-size: 13px; font-weight: 600; }
+.badge { font-family: ‘Space Mono’, monospace; font-size: 11px; background: var(–bg); border: 1px solid var(–border); padding: 3px 10px; border-radius: 20px; color: var(–text-dim); }
+.table-scroll { overflow-x: auto; max-height: 480px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: var(–header-h); padding: 10px 14px; text-align: center; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; position: sticky; top: 0; z-index: 2; color: var(–text-dim); }
+thead th:first-child { text-align: left; }
+tbody tr { border-bottom: 1px solid var(–border); transition: background 0.12s; }
+tbody tr:hover { background: var(–surface2); }
+tbody td { padding: 9px 14px; text-align: center; }
+tbody td:first-child { text-align: left; font-weight: 500; }
+tfoot td { padding: 10px 14px; text-align: center; font-weight: 700; background: var(–surface2); font-family: ‘Space Mono’, monospace; font-size: 12px; border-top: 2px solid var(–border); }
+tfoot td:first-child { text-align: left; }
+.stage-header td { background: #1a2035 !important; color: var(–accent) !important; font-weight: 700 !important; font-size: 12px !important; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 14px !important; }
+.stage-subtotal td { background: #181e2e !important; border-top: 1px solid var(–border); border-bottom: 2px solid var(–border); font-size: 12px !important; }
+.col-hyd { color: var(–hyd); font-weight: 600; }
+.col-malad { color: var(–malad); font-weight: 600; }
+.col-thane { color: var(–thane); font-weight: 600; }
+.col-total { color: var(–total); font-weight: 700; }
+.last-updated { font-size: 11px; color: var(–text-dim); font-family: ‘Space Mono’, monospace; margin-bottom: 16px; }
+.error-msg { background: #2a1020; border: 1px solid #f74f7a; color: #f74f7a; padding: 12px 18px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; display: none; }
+#viewerSection { display: none; }
+#adminSection { display: none; }
+.pw-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.pw-box { background: var(–surface); border: 1px solid var(–border); border-radius: 16px; padding: 32px 28px; width: 300px; text-align: center; }
+.pw-box h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.pw-box p { font-size: 12px; color: var(–text-dim); margin-bottom: 20px; }
+.pw-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(–border); background: var(–bg); color: var(–text); font-size: 14px; font-family: ‘Space Mono’, monospace; margin-bottom: 10px; outline: none; letter-spacing: 0.08em; box-sizing: border-box; }
+.pw-input:focus { border-color: var(–accent); }
+.pw-input.wrong { border-color: var(–accent4); }
+.pw-error { font-size: 12px; color: var(–accent4); margin-bottom: 10px; display: none; }
+.pw-btn { width: 100%; padding: 10px; border-radius: 8px; background: var(–accent); color: #fff; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: ‘DM Sans’, sans-serif; }
+.pw-btn:hover { background: #3a7aee; }
+.pw-cancel { margin-top: 10px; font-size: 12px; color: var(–text-dim); cursor: pointer; display: block; }
+.pw-cancel:hover { color: var(–text); }
 </style>
+
 </head>
 <body>
 <header>
@@ -106,15 +120,30 @@
   <div class="logo" style="color:var(--text-dim);">Lead Analytics Dashboard</div>
 </header>
 
+<!-- Password Modal -->
+
+<div class="pw-overlay" id="pwModal" style="display:none;">
+  <div class="pw-box">
+    <div style="font-size:32px;margin-bottom:10px;">🔒</div>
+    <h2>Admin Access</h2>
+    <p>Enter password to access the upload panel</p>
+    <input class="pw-input" type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')window.checkPw()"/>
+    <div class="pw-error" id="pwError">❌ Wrong password. Try again.</div>
+    <button class="pw-btn" onclick="window.checkPw()">Unlock</button>
+    <span class="pw-cancel" onclick="window.closePwModal()">Cancel</span>
+  </div>
+</div>
+
 <div class="main">
   <div class="mode-tabs">
-    <div class="tab" id="tabView" onclick="switchMode('view')">📊 View Dashboard</div>
-    <div class="tab" id="tabAdmin" onclick="switchMode('admin')">⬆ Admin Upload</div>
+    <div class="tab" id="tabView" onclick="window.switchMode('view')">📊 View Dashboard</div>
+    <div class="tab" id="tabAdmin" onclick="window.askAdminPw()">🔒 Admin Upload</div>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
 
   <!-- VIEWER -->
+
   <div id="viewerSection">
     <div class="sync-bar loading" id="syncBar"><span class="spinner"></span> Loading latest data...</div>
     <div class="last-updated" id="lastUpdated" style="display:none;"></div>
@@ -147,6 +176,7 @@
   </div>
 
   <!-- ADMIN -->
+
   <div id="adminSection">
     <div class="upload-zone" id="uploadZone">
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv"/>
@@ -163,7 +193,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJybYoIG2WLw-Fpa4UDK8L1tlTmicRljkPStccnrZj-D1mjulPFbPFZBnHnqFLDq5PlQ/exec';
+const SCRIPT_URL = 'https://withered-bar-5d76.anuj-sharma.workers.dev';
 
 const HYD_TEAMS = ['telugu','tamil','kannada','malayalam','hyderabad','hyd'];
 const MALAD_TEAMS = ['malad'];
@@ -177,6 +207,35 @@ const EXCLUDE_SOURCE_DETAIL = [
 
 let report1Data = {}, report2Data = {};
 let pendingData = null;
+
+const ADMIN_PW = 'Vishal@1234mumbai';
+let adminUnlocked = false;
+
+function askAdminPw() {
+  if (adminUnlocked) { switchMode('admin'); return; }
+  document.getElementById('pwModal').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  document.getElementById('pwInput').classList.remove('wrong');
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PW) {
+    adminUnlocked = true;
+    document.getElementById('pwModal').style.display = 'none';
+    switchMode('admin');
+  } else {
+    document.getElementById('pwInput').classList.add('wrong');
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function closePwModal() {
+  document.getElementById('pwModal').style.display = 'none';
+}
 
 function switchMode(mode) {
   document.getElementById('tabView').classList.toggle('active', mode === 'view');
@@ -209,6 +268,10 @@ function parseDate(val) {
     return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate() };
   }
   const str = val.toString().trim();
+  // M/D/YYYY H:MM or M/D/YYYY (US format from CSV)
+  const m0 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m0) return { y: parseInt(m0[3]), m: parseInt(m0[1])-1, d: parseInt(m0[2]) };
+  // DD-Mon-YY or DD-Mon-YYYY
   const m1 = str.match(/^(\d{1,2})[-\/]([A-Za-z]+)[-\/](\d{2,4})$/);
   if (m1) {
     const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -216,12 +279,14 @@ function parseDate(val) {
     let yr = parseInt(m1[3]); if (yr < 100) yr += 2000;
     if (mo !== undefined) return { y: yr, m: mo, d: parseInt(m1[1]) };
   }
+  // YYYY-MM-DD
   const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m2) return { y: parseInt(m2[1]), m: parseInt(m2[2])-1, d: parseInt(m2[3]) };
   const fd = new Date(str);
   if (!isNaN(fd)) return { y: fd.getFullYear(), m: fd.getMonth(), d: fd.getDate() };
   return null;
 }
+
 function dateKey(obj) {
   if (!obj) return '';
   return `${obj.y}-${String(obj.m+1).padStart(2,'0')}-${String(obj.d).padStart(2,'0')}`;
@@ -353,27 +418,60 @@ async function loadFromSheets() {
   document.getElementById('tablesGrid').style.display = 'none';
 
   try {
-    const res = await fetch(SCRIPT_URL, { method: 'GET' });
+    const res = await fetch(SCRIPT_URL + '?action=read');
     const json = await res.json();
-    if (json.status === 'empty' || !json.rows || json.rows.length < 3) {
+
+    if (json.status === 'empty' || !json.rows || json.rows.length < 2) {
       bar.className = 'sync-bar error';
       bar.innerHTML = '⚠ No data uploaded yet. Switch to Admin Upload tab to upload data.';
       return;
     }
 
-    const timestamp = json.rows[1][0] || '';
-    const dataRows = json.rows.slice(2);
-    const data = dataRows
-      .filter(r => r[1] && r[1] !== 'Other')
-      .map(r => ({
-        date: parseDateKey(r[0]),
-        unit: r[1],
-        stage: r[2],
-        attempts: parseInt(r[3]) || 0,
-      }));
+    // Row 0 = timestamp, Row 1 onwards = summary rows
+    const timestamp = json.rows[0][0] || '';
+    const summaryRows = json.rows.slice(1);
 
-    buildReports(data);
-    renderAll(data);
+    // Rebuild report1Data and report2Data from summary
+    report1Data = {};
+    report2Data = {};
+
+    for (const r of summaryRows) {
+      const type = r[0]; // 'R1' or 'R2'
+      if (type === 'R1') {
+        // [R1, dateKey, Hyderabad, Malad, Thane]
+        const dk = r[1];
+        report1Data[dk] = {
+          dateObj: parseDateKey(dk),
+          Hyderabad: parseInt(r[2]) || 0,
+          Malad: parseInt(r[3]) || 0,
+          Thane: parseInt(r[4]) || 0
+        };
+      } else if (type === 'R2') {
+        // [R2, stage, attemptKey, Hyderabad, Malad, Thane]
+        const stage = r[1], ak = r[2];
+        if (!report2Data[stage]) report2Data[stage] = {};
+        report2Data[stage][ak] = {
+          Hyderabad: parseInt(r[3]) || 0,
+          Malad: parseInt(r[4]) || 0,
+          Thane: parseInt(r[5]) || 0
+        };
+      }
+    }
+
+    // Build fake processedData for stats
+    let tH = 0, tM = 0, tT = 0;
+    for (const k of Object.keys(report1Data)) {
+      tH += report1Data[k].Hyderabad;
+      tM += report1Data[k].Malad;
+      tT += report1Data[k].Thane;
+    }
+
+    document.getElementById('statHyd').textContent = tH.toLocaleString();
+    document.getElementById('statMalad').textContent = tM.toLocaleString();
+    document.getElementById('statThane').textContent = tT.toLocaleString();
+    document.getElementById('statTotal').textContent = (tH+tM+tT).toLocaleString();
+
+    renderReportTables();
 
     bar.className = 'sync-bar synced';
     bar.innerHTML = '✓ Data loaded successfully';
@@ -382,10 +480,55 @@ async function loadFromSheets() {
       lu.style.display = 'block';
       lu.textContent = '🕐 Last updated by Vishal: ' + timestamp;
     }
+
+    document.getElementById('statsRow').style.display = 'grid';
+    document.getElementById('dlBar').style.display = 'flex';
+    document.getElementById('tablesGrid').style.display = 'grid';
+
   } catch(err) {
     bar.className = 'sync-bar error';
-    bar.innerHTML = '✗ Could not load data. Check your internet connection.';
+    bar.innerHTML = '✗ Could not load data: ' + err.message;
   }
+}
+
+function renderReportTables() {
+  // Report 1
+  const r1Body = document.getElementById('report1Body');
+  const r1Foot = document.getElementById('report1Foot');
+  r1Body.innerHTML = ''; r1Foot.innerHTML = '';
+  const sorted = Object.keys(report1Data).sort();
+  let sH=0,sM=0,sT=0;
+  for (const k of sorted) {
+    const d = report1Data[k];
+    const tot = d.Hyderabad+d.Malad+d.Thane;
+    sH+=d.Hyderabad; sM+=d.Malad; sT+=d.Thane;
+    r1Body.innerHTML += `<tr><td>${fmtDate(d.dateObj)}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
+  }
+  r1Foot.innerHTML = `<tr><td>Total</td><td class="col-hyd">${sH}</td><td class="col-malad">${sM}</td><td class="col-thane">${sT}</td><td class="col-total">${sH+sM+sT}</td></tr>`;
+  document.getElementById('r1Badge').textContent = sorted.length + ' days';
+
+  // Report 2
+  const r2Body = document.getElementById('report2Body');
+  const r2Foot = document.getElementById('report2Foot');
+  r2Body.innerHTML = ''; r2Foot.innerHTML = '';
+  const stages = Object.keys(report2Data).sort();
+  let gH=0,gM=0,gT=0;
+  for (const stage of stages) {
+    r2Body.innerHTML += `<tr class="stage-header"><td colspan="5">${stage}</td></tr>`;
+    const attempts = report2Data[stage];
+    const aKeys = ATTEMPT_ORDER.filter(a => attempts[a]);
+    let stH=0,stM=0,stTh=0;
+    for (const a of aKeys) {
+      const d = attempts[a];
+      const tot = d.Hyderabad+d.Malad+d.Thane;
+      stH+=d.Hyderabad; stM+=d.Malad; stTh+=d.Thane;
+      gH+=d.Hyderabad; gM+=d.Malad; gT+=d.Thane;
+      r2Body.innerHTML += `<tr><td style="padding-left:28px;">↳ Attempt ${a}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
+    }
+    r2Body.innerHTML += `<tr class="stage-subtotal"><td style="padding-left:14px;font-weight:700;">${stage} Total</td><td class="col-hyd" style="font-weight:700;">${stH}</td><td class="col-malad" style="font-weight:700;">${stM}</td><td class="col-thane" style="font-weight:700;">${stTh}</td><td class="col-total" style="font-weight:700;">${stH+stM+stTh}</td></tr>`;
+  }
+  r2Foot.innerHTML = `<tr><td>Grand Total</td><td class="col-hyd">${gH}</td><td class="col-malad">${gM}</td><td class="col-thane">${gT}</td><td class="col-total">${gH+gM+gT}</td></tr>`;
+  document.getElementById('r2Badge').textContent = stages.length + ' stages';
 }
 
 // ---- ADMIN File Upload ----
@@ -408,6 +551,8 @@ function handleFile(file) {
       const data = processRawData(raw);
       if (!data) { showError('Could not find required columns (Registration Date, User Team, Lead Stage).'); return; }
       pendingData = data;
+      // Pre-build reports so downloads work even before saving
+      buildReports(data);
       document.getElementById('fileName').textContent = file.name + ' — ' + data.length + ' rows ready';
       document.getElementById('fileBadge').style.display = 'inline-flex';
       uploadZone.classList.add('has-file');
@@ -418,45 +563,48 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-// ---- SAVE to Google Sheets ----
+// ---- SAVE summary to Google Sheets via GET ----
 document.getElementById('saveToSheets').addEventListener('click', async () => {
   if (!pendingData) return;
   const bar = document.getElementById('uploadSyncBar');
   bar.style.display = 'flex';
   bar.className = 'sync-bar syncing';
-  bar.innerHTML = '<span class="spinner"></span> Clearing old data...';
+  bar.innerHTML = '<span class="spinner"></span> Processing & saving...';
   document.getElementById('saveToSheets').disabled = true;
 
   try {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-    // Step 1: Clear
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'clear' }) });
+    // Build summary rows from report1Data and report2Data
+    const summaryRows = [];
 
-    // Step 2: Write header row + timestamp row
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'write',
-        headers: ['date_key','unit','stage','attempts'],
-        rows: [[timestamp,'','','']]
-      })
-    });
-
-    // Step 3: Write data in chunks of 500
-    const dataRows = pendingData.map(r => [r.date ? dateKey(r.date) : '', r.unit, r.stage, r.attempts]);
-    const CHUNK = 500;
-    for (let i = 0; i < dataRows.length; i += CHUNK) {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'write', rows: dataRows.slice(i, i+CHUNK) })
-      });
-      bar.innerHTML = `<span class="spinner"></span> Uploading... ${Math.min(i+CHUNK, dataRows.length).toLocaleString()} / ${dataRows.length.toLocaleString()} rows`;
+    // Report 1 rows: [R1, dateKey, Hyd, Malad, Thane]
+    for (const k of Object.keys(report1Data).sort()) {
+      const d = report1Data[k];
+      summaryRows.push(['R1', k, d.Hyderabad, d.Malad, d.Thane]);
     }
 
+    // Report 2 rows: [R2, stage, attemptKey, Hyd, Malad, Thane]
+    for (const stage of Object.keys(report2Data).sort()) {
+      for (const ak of ATTEMPT_ORDER.filter(a => report2Data[stage][a])) {
+        const d = report2Data[stage][ak];
+        summaryRows.push(['R2', stage, ak, d.Hyderabad, d.Malad, d.Thane]);
+      }
+    }
+
+    // Step 1: Clear
+    bar.innerHTML = '<span class="spinner"></span> Clearing old data...';
+    await fetch(SCRIPT_URL + '?action=clear');
+
+    // Step 2: Write timestamp + all summary rows in ONE request (only ~50 rows!)
+    bar.innerHTML = '<span class="spinner"></span> Saving summary data...';
+    const allRows = [[timestamp, '', '', '', ''], ...summaryRows];
+    await fetch(SCRIPT_URL + '?action=write&rows=' + encodeURIComponent(JSON.stringify(allRows)));
+
     bar.className = 'sync-bar synced';
-    bar.innerHTML = `✓ ${dataRows.length.toLocaleString()} rows uploaded! Dashboard is now live for everyone.`;
+    bar.innerHTML = `✓ Dashboard updated! ${summaryRows.length} summary rows saved. Live for everyone now.`;
     document.getElementById('saveToSheets').disabled = false;
+
   } catch(err) {
     bar.className = 'sync-bar error';
     bar.innerHTML = '✗ Upload failed: ' + err.message;
@@ -516,5 +664,6 @@ document.getElementById('dlReport2').addEventListener('click', () => {
 // Init
 switchMode('view');
 </script>
+
 </body>
 </html>
