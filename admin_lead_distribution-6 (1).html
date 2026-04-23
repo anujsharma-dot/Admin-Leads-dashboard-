@@ -97,18 +97,6 @@
   .error-msg { background: #2a1020; border: 1px solid #f74f7a; color: #f74f7a; padding: 12px 18px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; display: none; }
   #viewerSection { display: none; }
   #adminSection { display: none; }
-  .pw-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-  .pw-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; width: 300px; text-align: center; }
-  .pw-box h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .pw-box p { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; }
-  .pw-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; font-family: 'Space Mono', monospace; margin-bottom: 10px; outline: none; letter-spacing: 0.08em; box-sizing: border-box; }
-  .pw-input:focus { border-color: var(--accent); }
-  .pw-input.wrong { border-color: var(--accent4); }
-  .pw-error { font-size: 12px; color: var(--accent4); margin-bottom: 10px; display: none; }
-  .pw-btn { width: 100%; padding: 10px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .pw-btn:hover { background: #3a7aee; }
-  .pw-cancel { margin-top: 10px; font-size: 12px; color: var(--text-dim); cursor: pointer; display: block; }
-  .pw-cancel:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -118,23 +106,10 @@
   <div class="logo" style="color:var(--text-dim);">Lead Analytics Dashboard</div>
 </header>
 
-<!-- Password Modal -->
-<div class="pw-overlay" id="pwModal" style="display:none;">
-  <div class="pw-box">
-    <div style="font-size:32px;margin-bottom:10px;">🔒</div>
-    <h2>Admin Access</h2>
-    <p>Enter password to access the upload panel</p>
-    <input class="pw-input" type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"/>
-    <div class="pw-error" id="pwError">❌ Wrong password. Try again.</div>
-    <button class="pw-btn" onclick="checkPw()">Unlock</button>
-    <span class="pw-cancel" onclick="closePwModal()">Cancel</span>
-  </div>
-</div>
-
 <div class="main">
   <div class="mode-tabs">
     <div class="tab" id="tabView" onclick="switchMode('view')">📊 View Dashboard</div>
-    <div class="tab" id="tabAdmin" onclick="askAdminPw()">🔒 Admin Upload</div>
+    <div class="tab" id="tabAdmin" onclick="switchMode('admin')">⬆ Admin Upload</div>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
@@ -202,35 +177,6 @@ const EXCLUDE_SOURCE_DETAIL = [
 
 let report1Data = {}, report2Data = {};
 let pendingData = null;
-
-const ADMIN_PW = 'Vishal@1234mumbai';
-let adminUnlocked = false;
-
-function askAdminPw() {
-  if (adminUnlocked) { switchMode('admin'); return; }
-  document.getElementById('pwModal').style.display = 'flex';
-  document.getElementById('pwInput').value = '';
-  document.getElementById('pwError').style.display = 'none';
-  document.getElementById('pwInput').classList.remove('wrong');
-  setTimeout(() => document.getElementById('pwInput').focus(), 100);
-}
-
-function checkPw() {
-  const val = document.getElementById('pwInput').value;
-  if (val === ADMIN_PW) {
-    adminUnlocked = true;
-    document.getElementById('pwModal').style.display = 'none';
-    switchMode('admin');
-  } else {
-    document.getElementById('pwInput').classList.add('wrong');
-    document.getElementById('pwError').style.display = 'block';
-    document.getElementById('pwInput').value = '';
-  }
-}
-
-function closePwModal() {
-  document.getElementById('pwModal').style.display = 'none';
-}
 
 function switchMode(mode) {
   document.getElementById('tabView').classList.toggle('active', mode === 'view');
@@ -408,13 +354,14 @@ async function loadFromSheets() {
   document.getElementById('tablesGrid').style.display = 'none';
 
   try {
-    const res = await fetch(SCRIPT_URL + '?action=read');
+    const res = await fetch(SCRIPT_URL, { method: 'GET' });
     const json = await res.json();
     if (json.status === 'empty' || !json.rows || json.rows.length < 3) {
       bar.className = 'sync-bar error';
       bar.innerHTML = '⚠ No data uploaded yet. Switch to Admin Upload tab to upload data.';
       return;
     }
+
     const timestamp = json.rows[1][0] || '';
     const dataRows = json.rows.slice(2);
     const data = dataRows
@@ -425,8 +372,10 @@ async function loadFromSheets() {
         stage: r[2],
         attempts: parseInt(r[3]) || 0,
       }));
+
     buildReports(data);
     renderAll(data);
+
     bar.className = 'sync-bar synced';
     bar.innerHTML = '✓ Data loaded successfully';
     if (timestamp) {
@@ -436,7 +385,7 @@ async function loadFromSheets() {
     }
   } catch(err) {
     bar.className = 'sync-bar error';
-    bar.innerHTML = '✗ Could not load data: ' + err.message;
+    bar.innerHTML = '✗ Could not load data. Check your internet connection.';
   }
 }
 
@@ -470,39 +419,7 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-// ---- SAVE via iframe form submission (bypasses CORS) ----
-function formPost(params) {
-  return new Promise((resolve) => {
-    const iframe = document.createElement('iframe');
-    iframe.name = 'hidden_frame_' + Date.now();
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SCRIPT_URL;
-    form.target = iframe.name;
-
-    for (const [key, val] of Object.entries(params)) {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = val;
-      form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    iframe.onload = () => {
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-      resolve();
-    };
-    form.submit();
-    // Fallback timeout in case onload doesn't fire
-    setTimeout(resolve, 3000);
-  });
-}
-
+// ---- SAVE to Google Sheets ----
 document.getElementById('saveToSheets').addEventListener('click', async () => {
   if (!pendingData) return;
   const bar = document.getElementById('uploadSyncBar');
@@ -515,22 +432,26 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
     // Step 1: Clear
-    await formPost({ action: 'clear' });
+    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'clear' }) });
 
-    // Step 2: Write headers + timestamp
-    await formPost({
-      action: 'write',
-      rows: JSON.stringify([
-        ['date_key', 'unit', 'stage', 'attempts'],
-        [timestamp, '', '', '']
-      ])
+    // Step 2: Write header row + timestamp row
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'write',
+        headers: ['date_key','unit','stage','attempts'],
+        rows: [[timestamp,'','','']]
+      })
     });
 
-    // Step 3: Write data in chunks of 300
+    // Step 3: Write data in chunks of 500
     const dataRows = pendingData.map(r => [r.date ? dateKey(r.date) : '', r.unit, r.stage, r.attempts]);
     const CHUNK = 500;
     for (let i = 0; i < dataRows.length; i += CHUNK) {
-      await formPost({ action: 'write', rows: JSON.stringify(dataRows.slice(i, i + CHUNK)) });
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'write', rows: dataRows.slice(i, i+CHUNK) })
+      });
       bar.innerHTML = `<span class="spinner"></span> Uploading... ${Math.min(i+CHUNK, dataRows.length).toLocaleString()} / ${dataRows.length.toLocaleString()} rows`;
     }
 
