@@ -530,7 +530,7 @@ function parseDate(val) {
 
   const str = val.toString().trim();
 
-  // M/D/YYYY H:MM or M/D/YYYY (US format from CSV) — must check first!
+  // M/D/YYYY H:MM or M/D/YYYY (US format from CSV) — parse WITHOUT timezone conversion
 
   const m0 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
 
@@ -552,17 +552,11 @@ function parseDate(val) {
 
   }
 
-  // YYYY-MM-DD
+  // YYYY-MM-DD or ISO format — use IST offset to get correct date
 
   const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
   if (m2) return { y: parseInt(m2[1]), m: parseInt(m2[2])-1, d: parseInt(m2[3]) };
-
-  // Fallback
-
-  const fd = new Date(str);
-
-  if (!isNaN(fd)) return { y: fd.getFullYear(), m: fd.getMonth(), d: fd.getDate() };
 
   return null;
 
@@ -602,7 +596,7 @@ function fmtDateFromKey(key) {
 
   if (!m) return key;
 
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+ const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
   return `${parseInt(m[3])} ${months[parseInt(m[2])-1]} ${m[1]}`;
 
@@ -730,7 +724,7 @@ function renderAll(data) {
 
     else if (r.unit==='Malad') tM++;
 
-   else if (r.unit==='Thane') tT++;
+    else if (r.unit==='Thane') tT++;
 
   }
 
@@ -894,9 +888,9 @@ async function loadFromSheets() {
 
       if (type === 'R1') {
 
-        // [R1, dateKey, Hyderabad, Malad, Thane]
+        // Strip 'D:' prefix if present
 
-        const dk = r[1];
+        const dk = (r[1] || '').toString().replace('D:', '');
 
         report1Data[dk] = {
 
@@ -910,7 +904,7 @@ async function loadFromSheets() {
 
         };
 
-      } else if (type === 'R2') {
+     } else if (type === 'R2') {
 
         // [R2, stage, attemptKey, Hyderabad, Malad, Thane]
 
@@ -1166,7 +1160,7 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
 
   try {
 
-    const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour12: true });
+    const timestamp = new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric' });
 
  
 
@@ -1178,11 +1172,13 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
 
     // Report 1 rows: [R1, dateKey, Hyd, Malad, Thane]
 
+    // Prefix date with 'D:' so Google Sheets doesn't convert to date object
+
     for (const k of Object.keys(report1Data).sort()) {
 
-     const d = report1Data[k];
+      const d = report1Data[k];
 
-      summaryRows.push(['R1', k, d.Hyderabad, d.Malad, d.Thane]);
+      summaryRows.push(['R1', 'D:' + k, d.Hyderabad, d.Malad, d.Thane]);
 
     }
 
@@ -1300,7 +1296,7 @@ document.getElementById('dlReport2').addEventListener('click', () => {
 
   const wb = XLSX.utils.book_new();
 
- const rows = [['Stage / Attempts','Hyderabad','Malad','Thane','Total']];
+  const rows = [['Stage / Attempts','Hyderabad','Malad','Thane','Total']];
 
   const stages = Object.keys(report2Data).sort();
 
@@ -1355,4 +1351,3 @@ switchMode('view');
 </body>
 
 </html>
-
