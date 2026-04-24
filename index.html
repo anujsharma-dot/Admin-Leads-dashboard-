@@ -390,13 +390,15 @@ const THANE_TEAMS = ['thane'];
 
 const EXCLUDE_SOURCE_DETAIL = [
 
-  'hytomobi','mobbedpixein',
+  'hytomobi',
+
+  'mobbedpixein',
 
   'how-to-link-aadhaar-with-ration-card-online-offline-process',
 
   'how-to-prevent-fake-payment-screenshot-scam-in-2025',
 
-  '"media_source":"googleadwords_int"'
+  'b2c_app_diy_july25'
 
 ];
 
@@ -528,7 +530,7 @@ function parseDate(val) {
 
   const str = val.toString().trim();
 
-  // M/D/YYYY H:MM or M/D/YYYY (US format from CSV)
+  // M/D/YYYY H:MM or M/D/YYYY (US format from CSV) — must check first!
 
   const m0 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
 
@@ -555,6 +557,8 @@ function parseDate(val) {
   const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
   if (m2) return { y: parseInt(m2[1]), m: parseInt(m2[2])-1, d: parseInt(m2[3]) };
+
+  // Fallback
 
   const fd = new Date(str);
 
@@ -588,13 +592,33 @@ function fmtDate(obj) {
 
  
 
+function fmtDateFromKey(key) {
+
+  if (!key) return '';
+
+  // Handle full ISO: 2026-04-15T18:30:00.000Z or just 2026-04-15
+
+  const m = key.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  if (!m) return key;
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  return `${parseInt(m[3])} ${months[parseInt(m[2])-1]} ${m[1]}`;
+
+}
+
+ 
+
 function parseDateKey(str) {
 
   if (!str) return null;
 
-  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  // Handle full ISO format: 2026-04-15T18:30:00.000Z
 
-  if (m) return { y: parseInt(m[1]), m: parseInt(m[2])-1, d: parseInt(m[3]) };
+  const mISO = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  if (mISO) return { y: parseInt(mISO[1]), m: parseInt(mISO[2])-1, d: parseInt(mISO[3]) };
 
   return null;
 
@@ -698,7 +722,7 @@ const ATTEMPT_ORDER = ['0','1','2','3','4','5','6','7','8','9','10+'];
 
 function renderAll(data) {
 
- let tH=0,tM=0,tT=0;
+  let tH=0,tM=0,tT=0;
 
   for (const r of data) {
 
@@ -706,7 +730,7 @@ function renderAll(data) {
 
     else if (r.unit==='Malad') tM++;
 
-    else if (r.unit==='Thane') tT++;
+   else if (r.unit==='Thane') tT++;
 
   }
 
@@ -740,7 +764,9 @@ function renderAll(data) {
 
     sH+=d.Hyderabad; sM+=d.Malad; sT+=d.Thane;
 
-    r1Body.innerHTML += `<tr><td>${fmtDate(d.dateObj)}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
+    const displayDate = d.dateObj ? fmtDate(d.dateObj) : fmtDateFromKey(k);
+
+    r1Body.innerHTML += `<tr><td>${displayDate}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
 
   }
 
@@ -996,7 +1022,9 @@ function renderReportTables() {
 
     sH+=d.Hyderabad; sM+=d.Malad; sT+=d.Thane;
 
-    r1Body.innerHTML += `<tr><td>${fmtDate(d.dateObj)}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
+    const displayDate = d.dateObj ? fmtDate(d.dateObj) : fmtDateFromKey(k);
+
+    r1Body.innerHTML += `<tr><td>${displayDate}</td><td class="col-hyd">${d.Hyderabad}</td><td class="col-malad">${d.Malad}</td><td class="col-thane">${d.Thane}</td><td class="col-total">${tot}</td></tr>`;
 
   }
 
@@ -1138,7 +1166,7 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
 
   try {
 
-    const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+    const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour12: true });
 
  
 
@@ -1152,7 +1180,7 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
 
     for (const k of Object.keys(report1Data).sort()) {
 
-      const d = report1Data[k];
+     const d = report1Data[k];
 
       summaryRows.push(['R1', k, d.Hyderabad, d.Malad, d.Thane]);
 
@@ -1182,6 +1210,8 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
 
     await fetch(SCRIPT_URL + '?action=clear');
 
+    await new Promise(r => setTimeout(r, 2000)); // Wait 2 seconds for clear to complete
+
  
 
     // Step 2: Write timestamp + all summary rows in ONE request (only ~50 rows!)
@@ -1191,6 +1221,8 @@ document.getElementById('saveToSheets').addEventListener('click', async () => {
     const allRows = [[timestamp, '', '', '', ''], ...summaryRows];
 
     await fetch(SCRIPT_URL + '?action=write&rows=' + encodeURIComponent(JSON.stringify(allRows)));
+
+    await new Promise(r => setTimeout(r, 1000)); // Wait 1 second for write to complete
 
  
 
@@ -1268,7 +1300,7 @@ document.getElementById('dlReport2').addEventListener('click', () => {
 
   const wb = XLSX.utils.book_new();
 
-  const rows = [['Stage / Attempts','Hyderabad','Malad','Thane','Total']];
+ const rows = [['Stage / Attempts','Hyderabad','Malad','Thane','Total']];
 
   const stages = Object.keys(report2Data).sort();
 
